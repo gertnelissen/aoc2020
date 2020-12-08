@@ -3,23 +3,21 @@ import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 
 object Aoc07 {
   def reachableBy(input: List[String], target: String): Int = {
-    val solver = new Aoc07()
-    solver.parse(input)
+    val solver = new Aoc07(input)
     solver.reaching(solver.parseBag(target)).size
   }
 
   def bagsIn(input: List[String], target: String): Int = {
-    val solver = new Aoc07()
-    solver.parse(input)
+    val solver = new Aoc07(input)
     solver.bagsIn(solver.parseBag(target))
   }
 }
 
-class Aoc07() {
+class Aoc07(input: List[String]) {
   case class Bag(style: String, color: String)
   case class Constraint(count: Int, bag: Bag)
 
-  var rules: Map[Bag, List[Constraint]] = null
+  val rules: Map[Bag, List[Constraint]] = parse(input)
 
   def reaching(bag: Bag): Set[Bag] = {
     val outerBags = bagsAbleToHold(bag)
@@ -38,8 +36,8 @@ class Aoc07() {
     rules(bag).map(rule => rule.count * (1 + bagsIn(rule.bag))).sum
   }
 
-  def parse(input: List[String]): Unit = {
-    rules = input.map(parseRule).toMap
+  def parse(input: List[String]): Map[Bag, List[Constraint]] = {
+    input.map(parseRule).toMap
   }
 
   def parseRule(input: String): (Bag, List[Constraint]) = {
@@ -61,10 +59,6 @@ class Aoc07() {
   def parseConstraint(input: String): Constraint = {
     val split = input.trim.split(' ')
     Constraint(split(0).trim.toInt, parseBag(split.drop(1).mkString(" ")))
-  }
-
-  def printRules(): Unit = {
-    rules.foreach(rule => println("%s -> %s".format(rule._1, rule._2)))
   }
 }
 
