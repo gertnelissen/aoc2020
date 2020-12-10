@@ -90,24 +90,6 @@ class Aoc04Tests extends TestBase {
     Aoc04.countValidPassports(readStrings("Aoc04.txt")) shouldBe 202
   }
 
-  /*test("Ex 2") {
-    val input = textToStrings(
-      """..##.......
-        |#...#...#..
-        |.#....#..#.
-        |..#.#...#.#
-        |.#...##..#.
-        |..#.##.....
-        |.#.#.#....#
-        |.#........#
-        |#.##...#...
-        |#...##....#
-        |.#..#...#.#""".stripMargin)
-
-    val slopes = List(Pair(1, 1), Pair(3, 1), Pair(5, 1), Pair(7, 1), Pair(1, 2))
-    slopes.map(slope => Aoc03.countEncounteredTreesWithSlope(input, slope)).product shouldBe 336
-  }*/
-
   test("Puzzle 2") {
     Aoc04.countValidPassports(readStrings("Aoc04.txt"), true) shouldBe 202
   }
