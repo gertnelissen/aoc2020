@@ -15,22 +15,27 @@ class Aoc24(input: List[String]) {
 
   def blackTiles: Int = tiles.size
 
-  def passDay(day: Int): Unit =
-    tilesToConsider.map(tile => (tile, newStateIsBlack(tile))).foreach(tile =>
-      if(tile._2) tiles.add(tile._1) else tiles.remove(tile._1))
-
-  def tilesToConsider: List[Pair] = tiles.flatMap(tile => List(tile) ::: getNeighbours(tile)).toList.distinct
-
-  def newStateIsBlack(tile: Pair): Boolean = {
-    val numBlackNeighbours = getNeighbours(tile).count(tiles.contains)
-    if (tiles.contains(tile))
-      if (numBlackNeighbours == 0 || numBlackNeighbours > 2) false else true
-    else
-      if (numBlackNeighbours == 2) true else false
+  def passDay(day: Int): Unit = {
+    val (tilesToAdd, tilesToRemove) = getTilesToConsider.partition(newStateIsBlack)
+    tilesToAdd.foreach(tiles.add)
+    tilesToRemove.foreach(tiles.remove)
   }
 
-  def getNeighbours(pair: Pair): List[Pair] =
-    List(pair.add(2, 0), pair.add(-2, 0), pair.add(-1, 1), pair.add(1, 1), pair.add(-1, -1), pair.add(1, -1))
+  def getTilesToConsider: List[Pair] = tiles.flatMap(tile => List(tile) ::: getNeighbours(tile)).toList.distinct
+
+  def newStateIsBlack(tile: Pair): Boolean = if(tiles.contains(tile)) staysBlack(tile) else becomesBlack(tile)
+
+  def staysBlack(tile: Pair): Boolean = {
+    val numBlackNeighbours = getNumBlackNeighbours(tile)
+    if (numBlackNeighbours == 0 || numBlackNeighbours > 2) false else true
+  }
+
+  def becomesBlack(tile: Pair): Boolean = if (getNumBlackNeighbours(tile) == 2) true else false
+
+  def getNumBlackNeighbours(tile: Pair): Int = getNeighbours(tile).count(tiles.contains)
+
+  def getNeighbours(tile: Pair): List[Pair] =
+    List(tile.add(2, 0), tile.add(-2, 0), tile.add(-1, 1), tile.add(1, 1), tile.add(-1, -1), tile.add(1, -1))
 
   def processInstruction(instruction: String): Unit = {
     val tilePosition = getTilePosition(instruction)
